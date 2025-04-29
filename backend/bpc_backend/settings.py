@@ -1,11 +1,12 @@
 import os
 from pathlib import Path
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'chave-insegura-dev')
 
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -51,14 +52,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bpc_backend.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['DATABASE_URL'].rsplit('/', 1)[-1],
-        'USER': os.environ['DATABASE_URL'].split(':')[1][2:],
-        'PASSWORD': os.environ['DATABASE_URL'].split(':')[2].split('@')[0],
-        'HOST': os.environ['DATABASE_URL'].split('@')[1].split(':')[0],
-        'PORT': os.environ['DATABASE_URL'].split('@')[1].split(':')[1].split('/')[0],
-    }
+    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
 }
 
 LANGUAGE_CODE = 'pt-br'
@@ -70,3 +64,4 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
